@@ -1,0 +1,12 @@
+#include <stdio.h>
+int main() {
+    int A, B, SOMA; 
+    // Leitura dos dois valores inteiros
+    scanf("%d", &A);
+    scanf("%d", &B);
+    // Cálculo da soma
+    SOMA = A + B;
+    // Impressão do resultado no formato especificado
+    printf("SOMA = %d\n", SOMA);
+    return 0;
+}
