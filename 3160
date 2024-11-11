@@ -1,0 +1,121 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_NOME 50
+// Estrutura para o nó da lista encadeada
+typedef struct Amigo {
+    char nome[MAX_NOME];
+    struct Amigo *proximo;
+} Amigo;
+// Função para criar um novo nó (amigo)
+Amigo* criar_novo_amigo(const char* nome) {
+    Amigo* novo = (Amigo*)malloc(sizeof(Amigo));
+    if (novo == NULL) {
+        printf("Erro ao alocar memória.\n");
+        exit(1);
+    }
+    strncpy(novo->nome, nome, MAX_NOME);
+    novo->proximo = NULL;
+    return novo;
+}
+// Função para inserir um amigo no final da lista
+void inserir_amigo(Amigo **cabeca, const char* nome) {
+    Amigo* novo = criar_novo_amigo(nome);
+    if (*cabeca == NULL) {
+        *cabeca = novo;
+    } else {
+        Amigo* temp = *cabeca;
+        while (temp->proximo != NULL) {
+            temp = temp->proximo;
+        }
+        temp->proximo = novo;
+    }
+}
+// Função para inserir a nova lista de amigos
+void inserir_lista_amigos(Amigo **cabeca, Amigo *nova_lista, const char* amigo_indicado) {
+    if (strcmp(amigo_indicado, "nao") == 0) {
+        // Inserir a nova lista no final
+        Amigo* temp = nova_lista;
+        while (temp != NULL) {
+            inserir_amigo(cabeca, temp->nome);
+            temp = temp->proximo;
+        }
+    } else {
+        // Inserir antes do amigo indicado
+        Amigo* temp = *cabeca;
+        while (temp != NULL) {
+            if (strcmp(temp->nome, amigo_indicado) == 0) {
+                // Encontrou o amigo indicado
+                Amigo* aux = nova_lista;
+                while (aux != NULL) {
+                    Amigo* novo = criar_novo_amigo(aux->nome);
+                    novo->proximo = temp;
+                    if (temp == *cabeca) {
+                        *cabeca = novo; // Se for o primeiro amigo
+                    } else {
+                        Amigo* anterior = *cabeca;
+                        while (anterior->proximo != temp) {
+                            anterior = anterior->proximo;
+                        }
+                        anterior->proximo = novo;
+                    }
+                    aux = aux->proximo;
+                }
+                break;
+            }
+            temp = temp->proximo;
+        }
+    }
+}
+// Função para imprimir a lista de amigos
+void imprimir_lista(Amigo *cabeca) {
+    Amigo* temp = cabeca;
+    while (temp != NULL) {
+        printf("%s", temp->nome);
+        if (temp->proximo != NULL) {
+            printf(" ");
+        }
+        temp = temp->proximo;
+    }
+    printf("\n");
+}
+// Função para liberar a memória alocada para a lista
+void liberar_lista(Amigo *cabeca) {
+    Amigo* temp;
+    while (cabeca != NULL) {
+        temp = cabeca;
+        cabeca = cabeca->proximo;
+        free(temp);
+    }
+}
+int main() {
+    Amigo *lista_amigos = NULL;  // Cabeça da lista de amigos de Luiggy
+    Amigo *nova_lista = NULL;    // Cabeça da nova lista de amigos
+    char entrada[500];
+    char amigo_indicado[MAX_NOME];
+    // Leitura da lista atual de amigos
+    fgets(entrada, 500, stdin);
+    char* token = strtok(entrada, " \n");
+    while (token != NULL) {
+        inserir_amigo(&lista_amigos, token);
+        token = strtok(NULL, " \n");
+    }
+    // Leitura da nova lista de amigos
+    fgets(entrada, 500, stdin);
+    token = strtok(entrada, " \n");
+    while (token != NULL) {
+        inserir_amigo(&nova_lista, token);
+        token = strtok(NULL, " \n");
+    }
+    // Leitura do nome do amigo indicado
+    fgets(amigo_indicado, MAX_NOME, stdin);
+    amigo_indicado[strcspn(amigo_indicado, "\n")] = '\0';  // Remover nova linha
+    // Inserir a nova lista de amigos
+    inserir_lista_amigos(&lista_amigos, nova_lista, amigo_indicado);
+    // Exibir a lista final de amigos
+    imprimir_lista(lista_amigos);
+    // Liberar memória
+    liberar_lista(lista_amigos);
+    liberar_lista(nova_lista);
+    return 0;
+}
