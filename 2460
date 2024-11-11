@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_N 50000
+int main() {
+    int N, M;
+    // Leitura do número de pessoas na fila
+    scanf("%d", &N);
+    int fila[N];
+    // Leitura dos identificadores das pessoas na fila
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &fila[i]);
+    }
+    // Leitura do número de pessoas que saíram
+    scanf("%d", &M);
+    int saiu[100001] = {0};  // Usando um vetor para marcar os IDs das pessoas que saíram
+    // Leitura dos identificadores das pessoas que saíram
+    for (int i = 0; i < M; i++) {
+        int id;
+        scanf("%d", &id);
+        saiu[id] = 1;  // Marca a pessoa como que saiu
+    }
+    // Imprimir os identificadores das pessoas que permaneceram na fila
+    int primeiro = 1;  // Variável para controlar o primeiro número impresso
+    for (int i = 0; i < N; i++) {
+        if (!saiu[fila[i]]) {  // Se a pessoa não saiu da fila
+            if (!primeiro) {
+                printf(" ");  // Coloca um espaço antes, exceto para o primeiro elemento
+            }
+            printf("%d", fila[i]);
+            primeiro = 0;  // Depois de imprimir o primeiro, alteramos o controle
+        }
+    }
+    printf("\n");  // Imprime uma nova linha no final da saída
+    return 0;
+}
