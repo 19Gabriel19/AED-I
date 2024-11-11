@@ -1,0 +1,11 @@
+#include <stdio.h>
+int main() {
+    double raio, area;
+    // Leitura do valor do raio
+    scanf("%lf", &raio);
+    // Cálculo da área
+    area = 3.14159 * raio * raio;
+    // Impressão do resultado com 4 casas decimais
+    printf("A=%.4lf\n", area);
+    return 0;
+}
