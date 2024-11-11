@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_TAMANHO 20
+// Estrutura para um nó da lista encadeada
+typedef struct No {
+    char nome[MAX_TAMANHO + 1];  // +1 para garantir que caiba o '\0'
+    struct No* proximo;
+} No;
+// Função para adicionar um item à lista, sem duplicatas
+void adicionar_item(No** cabeca, const char* nome) {
+    No* temp = *cabeca;    
+    // Verifica se o item já existe na lista
+    while (temp != NULL) {
+        if (strcmp(temp->nome, nome) == 0) return;
+        temp = temp->proximo;
+    }
+    // Adiciona ao final da lista
+    No* novo_no = (No*)malloc(sizeof(No));
+    strncpy(novo_no->nome, nome, MAX_TAMANHO);  // Usa strncpy para evitar buffer overflow
+    novo_no->nome[MAX_TAMANHO] = '\0';  // Garante que o nome será sempre null-terminated
+    novo_no->proximo = NULL;
+    if (*cabeca == NULL) {
+        *cabeca = novo_no;
+    } else {
+        temp = *cabeca;
+        while (temp->proximo != NULL) temp = temp->proximo;
+        temp->proximo = novo_no;
+    }
+}
+// Função para ordenar a lista de compras
+void ordenar_lista(No* cabeca) {
+    if (!cabeca) return;   
+    for (No *i = cabeca; i != NULL; i = i->proximo) {
+        for (No *j = i->proximo; j != NULL; j = j->proximo) {
+            if (strcmp(i->nome, j->nome) > 0) {
+                char temp[MAX_TAMANHO + 1];
+                strcpy(temp, i->nome);
+                strcpy(i->nome, j->nome);
+                strcpy(j->nome, temp);
+            }
+        }
+    }
+}
+// Função para imprimir a lista de compras
+void imprimir_lista(No* cabeca) {
+    for (No* temp = cabeca; temp != NULL; temp = temp->proximo) {
+        printf("%s", temp->nome);
+        if (temp->proximo) printf(" ");
+    }
+    printf("\n");
+}
+// Função para liberar a memória da lista
+void liberar_lista(No* cabeca) {
+    No* temp;
+    while (cabeca) {
+        temp = cabeca;
+        cabeca = cabeca->proximo;
+        free(temp);
+    }
+}
+int main() {
+    int N;
+    scanf("%d", &N);
+    getchar();  // Limpa o buffer do \n anterior
+    while (N--) {
+        char linha[10001];
+        fgets(linha, sizeof(linha), stdin);  
+        No* lista_compras = NULL;
+        char* token = strtok(linha, " \n");
+        // Adiciona itens à lista de compras
+        while (token != NULL) {
+            adicionar_item(&lista_compras, token);
+            token = strtok(NULL, " \n");
+        }
+        // Ordena e imprime a lista
+        ordenar_lista(lista_compras);
+        imprimir_lista(lista_compras);  
+        // Libera a memória
+        liberar_lista(lista_compras);
+    }
+    return 0;
+}
