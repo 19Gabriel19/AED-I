@@ -1,17 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-int comp(const void* a, const void* b){
-	return strcmp((char*)a,(char*)b);
+// função de comparação para ordenar os nomes em ordem alfabética
+int comp(const void* a, const void* b) {
+    return strcmp((char*)a, (char*)b);
 }
 int main(void) {
-	int K, N, i;
-	char alunos[200][50];
-	scanf("%d %d\n", &N, &K);
-	for(i = 0; i < N; ++i){
-		scanf("%s", &alunos[i]);
-	}	
-	qsort(alunos, N, sizeof(char) * 50, comp);	
-	printf("%s\n", alunos[K - 1]);	
-	return 0;
+    int N, K;
+    // leitura de N (número de alunos) e K (posição sorteada)
+    scanf("%d %d", &N, &K);    
+    char alunos[N][21];  // Vetor de strings para armazenar os nomes dos alunos
+    // leitura dos nomes dos alunos
+    for(int i = 0; i < N; ++i) {
+        scanf("%s", alunos[i]);
+    }
+    // ordena os nomes em ordem alfabética
+    qsort(alunos, N, sizeof(alunos[0]), comp);
+    // imprime o nome do aluno sorteado (K-1, pois a indexação começa do 0)
+    printf("%s\n", alunos[K - 1]);
+    return 0;
 }
