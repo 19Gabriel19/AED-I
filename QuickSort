@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+// Função para particionar o vetor para o algoritmo QuickSort
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];  // Escolhe o último elemento como pivô
+    int i = (low - 1);  // Índice do menor elemento
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            // Troca arr[i] e arr[j]
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+    // Coloca o pivô na posição correta
+    int temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    return i + 1;  // Retorna o índice do pivô
+}
+// Função recursiva do QuickSort
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        // Particiona o vetor e obtém o índice do pivô
+        int pi = partition(arr, low, high);
+        // Ordena recursivamente os subvetores
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+// Função para preencher o vetor com números aleatórios
+void generateRandomArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        arr[i] = rand() % 1000000; // Números aleatórios até 1 milhão
+    }
+}
+int main() {
+    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
+    for (int size = 20000; size <= 400000; size += 20000) {
+        // Cria o vetor com números aleatórios
+        int *arr = (int *)malloc(size * sizeof(int));
+        if (arr == NULL) {
+            printf("Erro ao alocar memória!\n");
+            return 1;
+        }
+        generateRandomArray(arr, size);
+        // Medindo o tempo de execução do QuickSort
+        clock_t start_time = clock();  // Marca o início do tempo
+        // Ordena o vetor com QuickSort
+        quickSort(arr, 0, size - 1);
+        clock_t end_time = clock();  // Marca o fim do tempo
+        // Calculando o tempo de execução
+        double time_taken = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+        // Exibe o tempo de execução para o tamanho do vetor
+        printf("Tempo para ordenar vetor de tamanho %d com QuickSort: %.6f segundos\n", size, time_taken);
+        free(arr);  // Libera a memória alocada
+    }
+    return 0;
+}
