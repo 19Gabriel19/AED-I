@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+// Função para mesclar dois subvetores ordenados
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    int leftArr[n1], rightArr[n2];
+    for (int i = 0; i < n1; i++)
+        leftArr[i] = arr[left + i];
+    for (int j = 0; j < n2; j++)
+        rightArr[j] = arr[mid + 1 + j];
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (leftArr[i] <= rightArr[j]) {
+            arr[k] = leftArr[i];
+            i++;
+        } else {
+            arr[k] = rightArr[j];
+            j++;
+        }
+        k++;
+    }
+    while (i < n1) {
+        arr[k] = leftArr[i];
+        i++;
+        k++;
+    }
+    while (j < n2) {
+        arr[k] = rightArr[j];
+        j++;
+        k++;
+    }
+}
+// Função recursiva de MergeSort
+void mergeSort(int arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+// Função para preencher o vetor com números aleatórios
+void generateRandomArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        arr[i] = rand() % 1000000; // Números aleatórios até 1 milhão
+    }
+}
+int main() {
+    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
+    for (int size = 20000; size <= 400000; size += 20000) {
+        // Cria o vetor com números aleatórios
+        int *arr = (int *)malloc(size * sizeof(int));
+        if (arr == NULL) {
+            printf("Erro ao alocar memória!\n");
+            return 1;
+        }
+        generateRandomArray(arr, size);
+        // Medindo o tempo de execução do MergeSort
+        clock_t start_time = clock();  // Marca o início do tempo
+        // Ordena o vetor com MergeSort
+        mergeSort(arr, 0, size - 1);
+        clock_t end_time = clock();  // Marca o fim do tempo
+        // Calculando o tempo de execução
+        double time_taken = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+        // Exibe o tempo de execução para o tamanho do vetor
+        printf("Tempo para ordenar vetor de tamanho %d: %.6f segundos\n", size, time_taken);
+        free(arr);  // Libera a memória alocada
+    }
+    return 0;
+}
