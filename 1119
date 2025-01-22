@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+void resolverProblema(int N, int k, int m) {
+    int pessoas[N], i, restante = N, posK = 0, posM = N - 1;
+    // Inicializa o vetor de pessoas
+    for (i = 0; i < N; i++) {
+        pessoas[i] = i + 1;
+    }
+    while (restante > 0) {
+        // Conta k posições no sentido horário
+        int countK = k;
+        while (countK > 0) {
+            if (pessoas[posK] != 0) {
+                countK--;
+            }
+            if (countK > 0) {
+                posK = (posK + 1) % N;
+            }
+        }
+        // Conta m posições no sentido anti-horário
+        int countM = m;
+        while (countM > 0) {
+            if (pessoas[posM] != 0) {
+                countM--;
+            }
+            if (countM > 0) {
+                posM = (posM - 1 + N) % N;
+            }
+        }
+        // Imprime os escolhidos
+        printf("%3d", pessoas[posK]);
+        if (posK != posM) {
+            printf("%3d", pessoas[posM]);
+        }
+        // Marca as pessoas como removidas
+        pessoas[posK] = 0;
+        pessoas[posM] = 0;
+        restante -= (posK == posM) ? 1 : 2;
+        // Imprime separador se ainda houver pessoas
+        if (restante > 0) {
+            printf(",");
+        }
+        // Avança para a próxima pessoa disponível
+        while (pessoas[posK] == 0 && restante > 0) {
+            posK = (posK + 1) % N;
+        }
+        while (pessoas[posM] == 0 && restante > 0) {
+            posM = (posM - 1 + N) % N;
+        }
+    }
+    printf("\n");
+}
+int main() {
+    int N, k, m;
+    while (1) {
+        scanf("%d %d %d", &N, &k, &m);
+        if (N == 0 && k == 0 && m == 0) {
+            break;
+        }
+        resolverProblema(N, k, m);
+    }
+    return 0;
+}
