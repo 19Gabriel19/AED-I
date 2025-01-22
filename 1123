@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#define MAX 260
+#define INF INT_MAX
+typedef struct {
+    int destino, custo;
+} Aresta;
+typedef struct {
+    Aresta arestas[MAX];
+    int tamanho;
+} ListaAdj;
+ListaAdj grafo[MAX];
+int dist[MAX], visitado[MAX];
+void inicializarGrafo(int n) {
+    for (int i = 0; i < n; i++) {
+        grafo[i].tamanho = 0;
+        dist[i] = INF;
+        visitado[i] = 0;
+    }
+}
+void adicionarAresta(int u, int v, int p) {
+    grafo[u].arestas[grafo[u].tamanho].destino = v;
+    grafo[u].arestas[grafo[u].tamanho].custo = p;
+    grafo[u].tamanho++;
+}
+void dijkstra(int origem, int n, int c) {
+    dist[origem] = 0;
+    for (int i = 0; i < n; i++) {
+        int u = -1;
+        for (int j = 0; j < n; j++) {
+            if (!visitado[j] && (u == -1 || dist[j] < dist[u])) {
+                u = j;
+            }
+        }
+        if (dist[u] == INF) break;
+        visitado[u] = 1;
+        for (int j = 0; j < grafo[u].tamanho; j++) {
+            int v = grafo[u].arestas[j].destino;
+            int custo = grafo[u].arestas[j].custo;
+            // Respeitar a rota fixa para cidades de 0 a c-1
+            if (u < c - 1 && v != u + 1) continue;
+            if (dist[u] + custo < dist[v]) {
+                dist[v] = dist[u] + custo;
+            }
+        }
+    }
+}
+int main() {
+    int n, m, c, k;
+    while (scanf("%d %d %d %d", &n, &m, &c, &k) && n) {
+        inicializarGrafo(n);
+        for (int i = 0; i < m; i++) {
+            int u, v, p;
+            scanf("%d %d %d", &u, &v, &p);
+            adicionarAresta(u, v, p);
+            adicionarAresta(v, u, p);
+        }
+        // Executar o algoritmo de Dijkstra com a restrição da rota inicial
+        dijkstra(k, n, c);
+        printf("%d\n", dist[c - 1]);
+    }
+    return 0;
+}
