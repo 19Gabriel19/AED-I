@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <string.h>
+void compactarLinha(char *linha) {
+    int i = 0, count;
+    char atual;
+    while (linha[i] != '\0') {
+        atual = linha[i];
+        count = 1;
+        // Conta o número de repetições consecutivas
+        while (linha[i] == linha[i + 1]) {
+            count++;
+            i++;
+        }
+        // Caso para espaços em branco ($) ou zeros (#)
+        if ((atual == ' ' || atual == '0') && count > 2) {
+            char simbolo = (atual == ' ') ? '$' : '#';
+            // Escreve em blocos de no máximo 255
+            while (count > 255) {
+                printf("%c%c", simbolo, 255);
+                count -= 255;
+            }
+            printf("%c%c", simbolo, count);
+        } else {
+            // Imprime os caracteres normais ou repetições menores
+            for (int j = 0; j < count; j++) {
+                putchar(atual);
+            }
+        }
+        i++;
+    }
+    putchar('\n');
+}
+int main() {
+    int N;
+    char linha[2001];
+    // Lê o número de casos de teste
+    scanf("%d", &N);
+    getchar(); // Remove o caractere de nova linha após o número
+    for (int caso = 0; caso < N; caso++) {
+        fgets(linha, 2001, stdin);
+        // Remove o caractere de nova linha ao final da entrada
+        linha[strcspn(linha, "\n")] = '\0';
+        compactarLinha(linha);
+    }
+    return 0;
+}
