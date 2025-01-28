@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX_N 52
+// Função para reconstruir e imprimir a árvore em ordem pós-fixa
+void reconstruirPosfixa(char *pre, char *in, int tam) {
+    if (tam <= 0) return;
+    // A raiz é sempre o primeiro nó na travessia prefixa
+    char raiz = pre[0];
+    // Encontrar a raiz na sequência infixa
+    int pos = strchr(in, raiz) - in;
+    // Recursivamente construir a subárvore esquerda
+    reconstruirPosfixa(pre + 1, in, pos);
+    // Recursivamente construir a subárvore direita
+    reconstruirPosfixa(pre + pos + 1, in + pos + 1, tam - pos - 1);
+    // Imprimir a raiz (último nó na ordem pós-fixa)
+    putchar(raiz);
+}
+int main() {
+    int C;
+    scanf("%d", &C);
+    while (C--) {
+        int N;
+        char pre[MAX_N], in[MAX_N];
+        // Ler o número de nós e as sequências pré-fixa e infixa
+        scanf("%d %s %s", &N, pre, in);
+        // Construir e imprimir a sequência pós-fixa
+        reconstruirPosfixa(pre, in, N);
+        putchar('\n');
+    }
+    return 0;
+}
